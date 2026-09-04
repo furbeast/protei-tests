@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '4.1.0'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.seleniumhq.selenium:selenium-java:4.48.0'
+    implementation 'io.github.bonigarcia:webdrivermanager:6.3.4'
+
+    testImplementation platform('org.junit:junit-bom:6.0.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'org.slf4j:slf4j-api:2.0.18'
+    implementation 'ch.qos.logback:logback-classic:1.6.3'
+
+    implementation 'net.datafaker:datafaker:2.7.0'
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation "io.qameta.allure:allure-junit5:${allureVersion}"
+}
+
+test {
+    useJUnitPlatform()
+
+    def envFile = rootProject.file('.env')
+    if (envFile.exists()) {
+        def envProps = new Properties()
+        envFile.withInputStream { envProps.load(it) }
+        systemProperties envProps
+    }
+}
+
+allure {
+    version = "${allureVersion}"
+}
